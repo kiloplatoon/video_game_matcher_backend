@@ -1,2 +1,1 @@
-# video_game_matcher_frontend
 # video_game_matcher_backend
