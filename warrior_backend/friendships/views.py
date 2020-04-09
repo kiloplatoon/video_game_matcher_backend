@@ -2,16 +2,17 @@ from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import UserForm, RelationshipForm
+from .forms import RelationshipForm
 from .models import Relationship
-from .serializers import RelationshipSerializer, UserSerializer
+from .serializers import RelationshipSerializer#, UserCreateSerializer
 
 from accounts.models import User
+from accounts.serializers import UserCreateSerializer
 
 @csrf_exempt
 def friendship_home(request):
     users = User.objects.all()
-    serialized_users = UserSerializer(users).all_users
+    serialized_users = UserCreateSerializer(users).all_users
     return JsonResponse(data=serialized_users, status=200)
 
 @csrf_exempt
@@ -20,13 +21,13 @@ def new_user(request):
         form = UserForm(request.POST)
         if form.is_valid():
             user = form.save(commit=True)
-            serialized_user = UserSerializer(user).user_detail            
+            serialized_user = UserCreateSerializer(user).user_detail            
             return JsonResponse(data={'Success': 'You have created a new user!', 'user': serialized_user}, status=200)
 
 @csrf_exempt
 def user_detail(request, user_id):
     user = User.objects.get(id=user_id)
-    serialized_user = UserSerializer(user).user_detail
+    serialized_user = UserCreateSerializer(user).user_detail
     return JsonResponse(data=serialized_user, status=200)
 
 @csrf_exempt
@@ -36,7 +37,7 @@ def edit_user(request, user_id):
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             user = form.save(commit=True)
-            serialized_user = UserSerializer(user).user_detail            
+            serialized_user = UserCreateSerializer(user).user_detail            
             return JsonResponse(data={'Success': 'You have edited a user!', 'user': serialized_user}, status=200)
 
 @csrf_exempt
