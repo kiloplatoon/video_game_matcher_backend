@@ -25,6 +25,6 @@ class StreamTokenSerializer(TokenSerializer):
 
     def get_stream_token(self, obj):
         client = StreamChat(api_key=settings.STREAM_API_KEY, api_secret=settings.STREAM_API_SECRET)
-        token = client.create_token(obj.user.email)
+        token = client.create_token(obj.user.username)
 
         return token
