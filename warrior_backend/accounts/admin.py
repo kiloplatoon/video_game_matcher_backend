@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.apps import AppConfig
-# Register your models here.
+from accounts.models import User
+
+admin.site.register(User)
 
 class AuthConfig(AppConfig):
     name = 'accounts'
