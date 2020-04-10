@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{user.username}}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+  </head>
+  <body>
+
+    {{user}}
+    <br><br>
+    <h1>Hello {{user.username}}!</h1>
+
+    <a href="{{user.id}}/friends_list"><button>Friends List</button></a>
+    <a href="{{user.id}}/received_friend_requests"><button>Received Friend Requests</button></a>
+    <a href="{{user.id}}/sent_friend_requests"><button>Sent Friend Requests</button></a>
+
+
+
+
+    <form action="{{user.id}}/search_results" method="post">
+      <input name="search_id" type="text" value="Enter username">
+      <input type="submit" value="Search for user">
+    </form>
+
+
+
+    <script src="views.py" async defer></script>
+
+  </body>
+
+</html>

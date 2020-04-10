@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Friends List</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+  </head>
+  <body>
+
+
+    <h1>Friends List </h1>
+    {{user}}
+    <br>
+    {{list}}
+
+    <h1>{{user.username}}'s friends list</h1>
+    
+    {% for item in list %}
+      <a href="/friendships/{{user.id}}/view_profile/{{item.id}}"><h2>{{item.username}}</h2></a>
+    {% endfor %}
+
+    <script src="views.py" async defer></script>
+
+  </body>
+
+</html>
