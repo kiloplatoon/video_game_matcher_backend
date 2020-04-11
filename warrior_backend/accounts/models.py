@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import User
+from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     email = models.EmailField(verbose_name='email', max_length=255, unique=True)
@@ -12,16 +12,10 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE),
-    profile_picture = models.ImageField(default='default.jpg', upload_to='profile'),
-    models.TextField(max_length=500),
-    dob = models.DateField(max_length=8),
+    profile_picture = models.ImageField(upload_to ='uploads/',
+    bio = models.TextField(),
+    dob = models.DateField(),
     casual_competitive = models.BooleanField(null=True)
-    
-
-
-    def __str__(self):
-        return self.username
-
-
+   
 
 
