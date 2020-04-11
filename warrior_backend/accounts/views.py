@@ -8,6 +8,19 @@ from django.http import JsonResponse
 import json
 from .forms import ProfileForm
 
+def profile_list(request):
+    profiles = Profile.objects.all()
+    serializer = ProfileSerialzier(profiles, many=True)
+    return Response(serializer.data)
+
+
+@api_view(('GET',))
+def link(request, user_id):
+    user = User.objects.get(id=user_id)
+    profile = Profile(user=user)
+    serializer = ProfileSerialzier(profile, many=False)
+    return Response(serializer.data)
+
 def profile_detail(request, profile_id):
     profile = Profile.objects.get(id=profile_id)
     serialized_profile = ProfileSerializer(profile)
