@@ -8,7 +8,11 @@ class UserCreateSerializer(UserCreateSerializer):
         fields = ('id', 'email','username','password','first_name','last_name')
 
 
-class ProfileSerialzier(ProfileSerialzier):
-    class Meta(ProfileSerialzier.Meta):
-        Model = Profile
-        field = ('username', 'bio', 'dob', 'profile_picture')
+class ProfileSerialzier(serializers.ModelSerializer):
+    user = User()
+    class Meta:
+        model = Profile
+        fields = (
+            'user',
+            
+        )
