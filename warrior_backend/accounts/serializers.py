@@ -44,12 +44,13 @@ class StreamTokenSerializer(TokenSerializer):
 
         return token
 
-class ProfileSerialzier(serializers.ModelSerializer):
-    user = UserSerializer()
+class ProfileSerializer(serializers.ModelSerializer):
+    # user = UserSerializer()
     class Meta:
         model = Profile
         fields = (
-            'user',
+            'id',
+            # 'user',
             'profile_picture',
             'bio',
             'dob',
