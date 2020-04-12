@@ -5,17 +5,17 @@ from builtins import object
 #     def __init__(self, user_body):
 #         self.user_body = user_body
 
-#     @property
-#     def all_users(self):
-#         output = {'users': []}
-#         for user in self.user_body:
-#             user_details = {
-#                 'username': user.username,
-#                 'email': user.email,
-#                 'password': user.password
-#             }
-#             output['users'].append(user_details)
-#         return output
+    # @property
+    # def all_users(self):
+    #     output = {'users': []}
+    #     for user in self.user_body:
+    #         user_details = {
+    #             'username': user.username,
+    #             'email': user.email,
+    #             'password': user.password
+    #         }
+    #         output['users'].append(user_details)
+    #     return output
 
 #     @property
 #     def user_detail(self):

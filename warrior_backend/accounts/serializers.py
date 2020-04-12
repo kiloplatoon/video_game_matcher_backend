@@ -8,7 +8,22 @@ from .models import *
 class UserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
-        fields = ('id', 'email','username','password','first_name','last_name')
+        fields = ('id','email','username','password','first_name','last_name')
+
+    @property
+    def all_users(self):
+        output = {'users': []}
+        for user in self.user_body:
+            user_details = {
+                'id': user.id,
+                'email': user.email,
+                'username': user.username,
+                'password': user.password,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+            }
+            output['users'].append(user_details)
+        return output
 
 class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
@@ -25,6 +40,19 @@ class StreamTokenSerializer(TokenSerializer):
 
     def get_stream_token(self, obj):
         client = StreamChat(api_key=settings.STREAM_API_KEY, api_secret=settings.STREAM_API_SECRET)
-        token = client.create_token(obj.user.email)
+        token = client.create_token(obj.user.username)
 
         return token
+
+class ProfileSerializer(serializers.ModelSerializer):
+    # user = UserSerializer()
+    class Meta:
+        model = Profile
+        fields = (
+            'id',
+            # 'user',
+            'profile_picture',
+            'bio',
+            'dob',
+            'casual_competitive'
+        )
