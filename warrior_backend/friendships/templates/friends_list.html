@@ -14,12 +14,12 @@
     <h1>Friends List </h1>
     {{user}}
     <br>
-    {{list}}
 
     <h1>{{user.username}}'s friends list</h1>
     
     {% for item in list %}
       <a href="/friendships/{{user.id}}/view_profile/{{item.id}}"><h2>{{item.username}}</h2></a>
+      <a href="/friendships/{{user.id}}/deny_friend_request/{{item.id}}"><button>Delete</button></a>
     {% endfor %}
 
     <script src="views.py" async defer></script>

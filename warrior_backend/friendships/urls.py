@@ -23,6 +23,7 @@ urlpatterns = [
 
     path('<int:user_id>/deny_friend_request/<int:action_user>', views.deny_friend_request, name='deny_friend_request'),
 
+    path('<int:user_id>/delete_friend/<int:action_user>', views.deny_friend_request, name='deny_friend_request'),
 
     path('relationship', views.relationship_detail, name='relationship_detail'),
     path('relationship/friend_request', views.friend_request, name='friend_request'),

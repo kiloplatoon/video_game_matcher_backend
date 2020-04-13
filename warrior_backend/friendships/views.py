@@ -56,6 +56,9 @@ def relationship_detail(request):
 
 @csrf_exempt
 def friend_request(request):
+
+    temp = request.POST.dict()
+
     if request.method == 'POST':
         form = RelationshipForm(request.POST)
         if form.is_valid():
@@ -63,8 +66,12 @@ def friend_request(request):
             relationship = form.save(commit=True)
             serialized_relationship = RelationshipSerializer(relationship).relationship_detail            
             return JsonResponse(data={'Success': 'You have created a new relationship!', 'relationship': serialized_relationship}, status=200)
+        elif (Relationship.objects.values().filter(user_one=temp['user_one'], user_two=temp['user_two']).exists()):
+            Relationship.objects.filter(user_one=temp['user_one'], user_two=temp['user_two']).update(status=0, action_user=temp['action_user'])
+            return JsonResponse(data={'Success': 'Readded user'}, status=200)
+
         else:
-            return JsonResponse(data={'Error': 'Relationship already exists or form not valid!'}, status=200)
+            return JsonResponse(data={'Error': 'Form not valid!'}, status=200)
             
 @csrf_exempt
 def accept_friend_request(request, user_id, action_user):
@@ -75,10 +82,14 @@ def accept_friend_request(request, user_id, action_user):
 
 @csrf_exempt
 def deny_friend_request(request, user_id, action_user):
-    Relationship.objects.filter(user_one=action_user, user_two=user_id).update(status=2, action_user=action_user)# .values()
+    Relationship.objects.filter(user_one=action_user, user_two=user_id).update(status=2, action_user=action_user)
+    Relationship.objects.filter(user_two=action_user, user_one=user_id).update(status=2, action_user=action_user)
+    
+    # .values()
     user1 = User.objects.get(id=action_user)
     user2 = User.objects.get(id=user_id)
     return JsonResponse(data={f'Success!': f'{user1.username} and {user2.username} are now DECLINED friends!'}, status=200)
+
 
 # 0 = Pending 1 = Accepted 2 = Declined 3 = Blocked
 @csrf_exempt
@@ -172,6 +183,7 @@ def search_results(request, user_id):
     search_user = request.POST.dict()['search_id']
     if not User.objects.all().filter(username=search_user).exists():
         result = "Username not found :("
+        return render(request, 'search_results_error.html', {'search_user' : search_user, 'result' : result, 'user' : user})
     else:
         result = User.objects.values().get(username=search_user)
 
