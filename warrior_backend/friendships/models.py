@@ -24,3 +24,5 @@ class Relationship(models.Model):
             models.UniqueConstraint(fields=['user_one', 'user_two' ], name="unique_users")
         ]
  
+    def __str__(self):
+        return f'User1: {self.user_one}, User2: {self.user_two}   |  STATUS: {self.status}'
