@@ -16,10 +16,12 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'accounts.User'
+# AUTH_PROFILE_MODEL = 'accounts.Profile'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,19 +30,30 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'accounts',
     'djoser',
+
+    # Apps
+    'accounts',
+    'friendships',
+    'status',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = (
+       'http://localhost:3000',
+)
 
 ROOT_URLCONF = 'warrior_backend.urls'
 
@@ -89,9 +102,13 @@ DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SERIALIZERS' : {
         'user_create' : 'accounts.serializers.UserCreateSerializer',
-        'user' : 'accounts.serializers.UserCreateSerializer',
+        'user' : 'accounts.serializers.UserSerializer',
+        'token': 'accounts.serializers.StreamTokenSerializer',
     }
 }
+
+STREAM_API_KEY = 'wsmv73rq7u6d' # https://getstream.io/dashboard/
+STREAM_API_SECRET = 'k2cyettm9uxws4mwc7y7pgfb22ctdfcpmgrsfyxfvx9ns3bdw7ytmcfwsnxunbmn'
 
 
 # Password validation
