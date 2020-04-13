@@ -16,6 +16,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'accounts.User'
+# AUTH_PROFILE_MODEL = 'accounts.Profile'
 
 # Application definition
 
@@ -29,9 +30,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'accounts',
     'djoser',
+
+    # Apps
+    'accounts',
     'friendships',
+    'status',
 ]
 
 MIDDLEWARE = [
