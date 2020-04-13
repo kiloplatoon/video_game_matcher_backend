@@ -15,5 +15,11 @@ class Profile(models.Model):
     profile_picture = models.ImageField(upload_to ='uploads/', null = True, blank=True)
     bio = models.TextField(max_length=400, default = '', blank = True)
     dob = models.DateField(null = True, blank=True)
-    casual_competitive = models.BooleanField(null=True, blank=True, default=False)
+    casual_competitive = models.CharField(max_length=255, null = True, blank = True)
+    platform = models.CharField(max_length=255, null = True, blank = True)
+    game = models.CharField(max_length=255, null = True, blank = True)
+
+    def __str__(self):
+        return f'User Profile: {self.user}'
+
    
