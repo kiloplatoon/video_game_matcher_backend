@@ -12,10 +12,11 @@ from accounts.serializers import UserCreateSerializer
 
 @csrf_exempt
 def friendship_home(request):
-    users = User.objects.all()
-    serialized_users = UserCreateSerializer(users).all_users
-    return JsonResponse(data=serialized_users, status=200) and render(request, 'friendships.html')
-
+    # users = User.objects.all()
+    # serialized_users = UserCreateSerializer(users).all_users
+    # return JsonResponse(data=serialized_users, status=200) and render(request, 'friendships.html')
+    return render(request, 'friendships.html')
+    
 @csrf_exempt
 def new_user(request):
     if request.method == 'POST':

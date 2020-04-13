@@ -6,24 +6,43 @@ from rest_framework import serializers
 from .models import *
 
 class UserCreateSerializer(UserCreateSerializer):
+
+    def __init(self, user_body):
+        self.user_body = user_body
+
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ('id','email','username','password','first_name','last_name')
 
-    @property
-    def all_users(self):
-        output = {'users': []}
-        for user in self.user_body:
-            user_details = {
-                'id': user.id,
-                'email': user.email,
-                'username': user.username,
-                'password': user.password,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-            }
-            output['users'].append(user_details)
-        return output
+    # @property
+    # def all_users(self):
+    #     output = {'users': []}
+    #     for user in self.user_body:
+    #         user_details = {
+    #             'id': user.id,
+    #             'email': user.email,
+    #             'username': user.username,
+    #             'password': user.password,
+    #             'first_name': user.first_name,
+    #             'last_name': user.last_name,
+    #         }
+    #         output['users'].append(user_details)
+    #     return output
+
+    # @property
+    # def all_users(self):
+    #     output = {'users': []}
+    #     for user in self.user_body:
+    #         user_details = {
+    #             'id': user.id,
+    #             'email': user.email,
+    #             'username': user.username,
+    #             'password': user.password,
+    #             'first_name': user.first_name,
+    #             'last_name': user.last_name,
+    #         }
+    #         output['users'].append(user_details)
+    #     return output
 
 class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):

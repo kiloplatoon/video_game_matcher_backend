@@ -49,12 +49,10 @@ from friendships.models import Relationship
 
 # Create your views here.
 @api_view(['GET'])
-def current_user(request, user_id):
+def current_user(request):
     """
     Determine the current user by their token, and return their data
     """
 
-    user = User.objects.values().get(id=user_id)
-    
     serializer = UserSerializer(request.user)
-    return Response(serializer.data) and render(request, 'current_user.html', {'user' : user})
+    return Response(serializer.data)
