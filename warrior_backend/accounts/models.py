@@ -19,5 +19,7 @@ class Profile(models.Model):
     platform = models.CharField(max_length=255, null = True, blank = True)
     game = models.CharField(max_length=255, null = True, blank = True)
 
+    def __str__(self):
+        return f'User Profile: {self.user}'
 
    
