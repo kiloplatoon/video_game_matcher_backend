@@ -28,7 +28,7 @@ class UserCreateSerializer(UserCreateSerializer):
 class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ('id', 'email','username',
+        fields = ('id', 'email','username','first_name', 'last_name'
         )
 
 class StreamTokenSerializer(TokenSerializer):
