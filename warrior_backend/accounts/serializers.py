@@ -45,14 +45,16 @@ class StreamTokenSerializer(TokenSerializer):
         return token
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # user = UserSerializer()
+    user = UserSerializer()
     class Meta:
         model = Profile
         fields = (
             'id',
-            # 'user',
+            'user',
             'profile_picture',
             'bio',
             'dob',
-            'casual_competitive'
+            'casual_competitive',
+            'platform',
+            'game',
         )
