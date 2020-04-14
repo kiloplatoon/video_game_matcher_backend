@@ -1,0 +1,1 @@
+web: gunicorn warrior_backend.wsgi
