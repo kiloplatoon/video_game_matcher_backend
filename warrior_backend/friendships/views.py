@@ -12,11 +12,12 @@ from accounts.serializers import UserCreateSerializer
 
 @csrf_exempt
 def friendship_home(request):
+    pass
     # users = User.objects.all()
     # serialized_users = UserCreateSerializer(users).all_users
     # return JsonResponse(data=serialized_users, status=200) and render(request, 'friendships.html')
-    return render(request, 'friendships.html')
-    
+    # return render(request, 'friendships.html')
+
 @csrf_exempt
 def new_user(request):
     if request.method == 'POST':
@@ -27,8 +28,8 @@ def new_user(request):
             return JsonResponse(data={'Success': 'You have created a new user!', 'user': serialized_user}, status=200)
 
 @csrf_exempt
-def user_detail(request, user_id):
-    user = User.objects.get(id=user_id)
+def user_detail(request):
+    # user = User.objects.get(id=user_id)
     serialized_user = UserCreateSerializer(user).user_detail
     return JsonResponse(data=serialized_user, status=200)
 
@@ -118,11 +119,8 @@ def check_friendship(request, action_user, user_id):
         return JsonResponse(data={f'Success!': f'{user2.username} has blocked {user2.username}.'})
 
 @csrf_exempt
-def friends_list(action_user):
-    print("WTFFF")
+def friends_list(request, action_user):
     temp = Relationship.objects.filter(Q(user_one=action_user, status=1) | Q(user_two=action_user, status=1) ).values()
-    print(len(temp))
-    print(temp)
     list = []
     user1 = User.objects.get(id=action_user)
     for i in temp:
@@ -133,8 +131,7 @@ def friends_list(action_user):
             list.append(User.objects.get(id = i['user_one_id']).username)
 
     user1 = User.objects.get(id=action_user)
-    return list
-    # return JsonResponse(data={f'Success!': f'{user1.username} friend list: {list}'})
+    return JsonResponse(data={f'List': f'{list}'})
 
 @csrf_exempt
 def pending_requests(action_user):
