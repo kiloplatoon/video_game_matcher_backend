@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{user.username}}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+  </head>
+  <body>
+    <h1>Search Results for {{search_user}}</h1>
+    <a href="/friendships/{{user.id}}/view_profile/{{result.id}}"><h2>{{result.username}}</h2></a>
+
+
+    <form action="/friendships/relationship/friend_request" method="post">
+      <input hidden name="user_one" value="{{user.id}}">
+      <input hidden name="user_two" value="{{result.id}}">
+      <input hidden name="status" value="0">
+      <input hidden name="action_user" value="{{user.id}}">
+      <input type="submit" value="Add">
+    
+    </form>
+
+    {{result}}
+
+
+    <script src="views.py" async defer></script>
+
+  </body>
+
+</html>

@@ -6,29 +6,48 @@ from rest_framework import serializers
 from .models import *
 
 class UserCreateSerializer(UserCreateSerializer):
+
+    def __init(self, user_body):
+        self.user_body = user_body
+
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ('id','email','username','password','first_name','last_name')
 
-    @property
-    def all_users(self):
-        output = {'users': []}
-        for user in self.user_body:
-            user_details = {
-                'id': user.id,
-                'email': user.email,
-                'username': user.username,
-                'password': user.password,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-            }
-            output['users'].append(user_details)
-        return output
+    # @property
+    # def all_users(self):
+    #     output = {'users': []}
+    #     for user in self.user_body:
+    #         user_details = {
+    #             'id': user.id,
+    #             'email': user.email,
+    #             'username': user.username,
+    #             'password': user.password,
+    #             'first_name': user.first_name,
+    #             'last_name': user.last_name,
+    #         }
+    #         output['users'].append(user_details)
+    #     return output
+
+    # @property
+    # def all_users(self):
+    #     output = {'users': []}
+    #     for user in self.user_body:
+    #         user_details = {
+    #             'id': user.id,
+    #             'email': user.email,
+    #             'username': user.username,
+    #             'password': user.password,
+    #             'first_name': user.first_name,
+    #             'last_name': user.last_name,
+    #         }
+    #         output['users'].append(user_details)
+    #     return output
 
 class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ('id', 'email','username',
+        fields = ('id', 'email','username','first_name', 'last_name'
         )
 
 class StreamTokenSerializer(TokenSerializer):
@@ -45,14 +64,16 @@ class StreamTokenSerializer(TokenSerializer):
         return token
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # user = UserSerializer()
+    user = UserSerializer()
     class Meta:
         model = Profile
         fields = (
             'id',
-            # 'user',
+            'user',
             'profile_picture',
             'bio',
             'dob',
-            'casual_competitive'
+            'casual_competitive',
+            'platform',
+            'game',
         )

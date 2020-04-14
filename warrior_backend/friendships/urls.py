@@ -9,6 +9,22 @@ urlpatterns = [
     path('<int:user_id>/edit', views.edit_user, name='edit_user'), # probably can delete
     path('<int:user_id>/delete', views.delete_user, name='delete_user'), # probably can delete
 
+    path('<int:user_id>/view_profile/<int:target_user>', views.view_profile, name='view_profile'),
+
+    path('<int:user_id>/friends_list', views.go_to_friends_list, name='go_to_friends_list'),
+
+    path('<int:user_id>/search_results', views.search_results, name='search_results'),
+
+    path('<int:user_id>/received_friend_requests', views.received_friend_requests, name='received_friend_requests'),
+
+    path('<int:user_id>/sent_friend_requests', views.sent_friend_requests, name='sent_friend_requests'),
+
+    path('<int:user_id>/accept_friend_request/<int:action_user>', views.accept_friend_request, name='accept_friend_request'),
+
+    path('<int:user_id>/deny_friend_request/<int:action_user>', views.deny_friend_request, name='deny_friend_request'),
+
+    path('<int:user_id>/delete_friend/<int:action_user>', views.deny_friend_request, name='deny_friend_request'),
+
     path('relationship', views.relationship_detail, name='relationship_detail'),
     path('relationship/friend_request', views.friend_request, name='friend_request'),
 

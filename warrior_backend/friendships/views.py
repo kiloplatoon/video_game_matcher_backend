@@ -3,7 +3,7 @@ from django.shortcuts import render, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 
-from .forms import RelationshipForm
+from .forms import RelationshipForm, UserForm
 from .models import Relationship
 from .serializers import RelationshipSerializer#, UserCreateSerializer
 
@@ -12,10 +12,11 @@ from accounts.serializers import UserCreateSerializer
 
 @csrf_exempt
 def friendship_home(request):
-    users = User.objects.all()
-    serialized_users = UserCreateSerializer(users).all_users
-    return JsonResponse(data=serialized_users, status=200)
-
+    # users = User.objects.all()
+    # serialized_users = UserCreateSerializer(users).all_users
+    # return JsonResponse(data=serialized_users, status=200) and render(request, 'friendships.html')
+    return render(request, 'friendships.html')
+    
 @csrf_exempt
 def new_user(request):
     if request.method == 'POST':
@@ -56,6 +57,9 @@ def relationship_detail(request):
 
 @csrf_exempt
 def friend_request(request):
+
+    temp = request.POST.dict()
+
     if request.method == 'POST':
         form = RelationshipForm(request.POST)
         if form.is_valid():
@@ -63,15 +67,29 @@ def friend_request(request):
             relationship = form.save(commit=True)
             serialized_relationship = RelationshipSerializer(relationship).relationship_detail            
             return JsonResponse(data={'Success': 'You have created a new relationship!', 'relationship': serialized_relationship}, status=200)
+        elif (Relationship.objects.values().filter(user_one=temp['user_one'], user_two=temp['user_two']).exists()):
+            Relationship.objects.filter(user_one=temp['user_one'], user_two=temp['user_two']).update(status=0, action_user=temp['action_user'])
+            return JsonResponse(data={'Success': 'Readded user'}, status=200)
+
         else:
-            return JsonResponse(data={'Error': 'Relationship already exists or form not valid!'}, status=200)
+            return JsonResponse(data={'Error': 'Form not valid!'}, status=200)
             
 @csrf_exempt
-def accept_friend_request(request, action_user, user_id):
+def accept_friend_request(request, user_id, action_user):
     Relationship.objects.filter(user_one=action_user, user_two=user_id).update(status=1, action_user=action_user)# .values()
     user1 = User.objects.get(id=action_user)
     user2 = User.objects.get(id=user_id)
     return JsonResponse(data={f'Success!': f'{user1.username} and {user2.username} are now friends!'}, status=200)
+
+@csrf_exempt
+def deny_friend_request(request, user_id, action_user):
+    Relationship.objects.filter(user_one=action_user, user_two=user_id).update(status=2, action_user=action_user)
+    Relationship.objects.filter(user_two=action_user, user_one=user_id).update(status=2, action_user=action_user)
+    
+    # .values()
+    user1 = User.objects.get(id=action_user)
+    user2 = User.objects.get(id=user_id)
+    return JsonResponse(data={f'Success!': f'{user1.username} and {user2.username} are now DECLINED friends!'}, status=200)
 
 
 # 0 = Pending 1 = Accepted 2 = Declined 3 = Blocked
@@ -100,7 +118,8 @@ def check_friendship(request, action_user, user_id):
         return JsonResponse(data={f'Success!': f'{user2.username} has blocked {user2.username}.'})
 
 @csrf_exempt
-def friends_list(request, action_user):
+def friends_list(action_user):
+    print("WTFFF")
     temp = Relationship.objects.filter(Q(user_one=action_user, status=1) | Q(user_two=action_user, status=1) ).values()
     print(len(temp))
     print(temp)
@@ -114,18 +133,20 @@ def friends_list(request, action_user):
             list.append(User.objects.get(id = i['user_one_id']).username)
 
     user1 = User.objects.get(id=action_user)
-    return JsonResponse(data={f'Success!': f'{user1.username} friend list: {list}'})
+    return list
+    # return JsonResponse(data={f'Success!': f'{user1.username} friend list: {list}'})
 
 @csrf_exempt
-def pending_requests(request, action_user):
+def pending_requests(action_user):
     temp = Relationship.objects.filter(user_two=action_user, status=0).values()
 
     list = []
     for i in temp:
-        list.append(User.objects.get(id = i['user_on_id']).username)
+        list.append(User.objects.get(id = i['user_one_id']).username)
 
     user1 = User.objects.get(id=action_user)
-    return JsonResponse(data={f'Success!': f'{user1.username} pending friend request list: {list}'})
+    return list
+    # return JsonResponse(data={f'Success!': f'{user1.username} pending friend request list: {list}'})
 
 @csrf_exempt
 def friend_requests_sent_by_user(request, action_user):
@@ -139,14 +160,63 @@ def friend_requests_sent_by_user(request, action_user):
     user1 = User.objects.get(id=action_user)
     return JsonResponse(data={f'Success!': f'{user1.username} pending sent friend request list: {list}'})
 
+@csrf_exempt
+def go_to_friends_list(request, user_id):
+    user = User.objects.values().get(id=user_id)
+
+    temp = Relationship.objects.filter(Q(user_one=user_id, status=1) | Q(user_two=user_id, status=1) ).values()
+    list = []
+    user1 = User.objects.get(id=user_id)
+    for i in temp:
+        if user1.username != User.objects.get(id = i['user_two_id']).username:
+            list.append(User.objects.values().get(id = i['user_two_id']))
+
+        if user1.username != User.objects.get(id = i['user_one_id']).username:
+            list.append(User.objects.values().get(id = i['user_one_id']))
+
+    return render(request, 'friends_list.html', {'user' : user, 'list' : list})
 
 
+@csrf_exempt
+def search_results(request, user_id):
+    user = User.objects.values().get(id=user_id)
 
-    # temp = Relationship.objects.filter(user_one=action_user, status=0).values()
+    search_user = request.POST.dict()['search_id']
+    if not User.objects.all().filter(username=search_user).exists():
+        result = "Username not found :("
+        return render(request, 'search_results_error.html', {'search_user' : search_user, 'result' : result, 'user' : user})
+    else:
+        result = User.objects.values().get(username=search_user)
 
-    # list = []
-    # for i in temp:
-    #     list.append(User.objects.get(id = i['user_two_id']).username)
+    return render(request, 'search_results.html', {'search_user' : search_user, 'result' : result, 'user' : user})
 
-    # user1 = User.objects.get(id=action_user)
-    # return JsonResponse(data={f'Success!': f'{user1.username} pending friend request list: {list}'})
+
+@csrf_exempt
+def received_friend_requests(request, user_id):
+    user = User.objects.values().get(id=user_id)
+    temp = Relationship.objects.filter(user_two=user_id, status=0).values()
+    print(temp)
+    list = []
+
+    for i in temp:
+        list.append(User.objects.values().get(id = i['user_one_id']))
+
+    return render(request, 'received_friend_requests.html', {'user' : user, 'list' : list})
+
+@csrf_exempt
+def sent_friend_requests(request, user_id):
+    user = User.objects.values().get(id=user_id)
+
+    temp = Relationship.objects.filter(user_one=user_id, status=0).values()
+
+    list = []
+    for i in temp:
+        list.append(User.objects.values().get(id = i['user_two_id']))
+
+    return render(request, 'sent_friend_requests.html', {'user' : user, 'list' : list})
+
+def view_profile(request, user_id, target_user):
+    user = User.objects.values().get(id=user_id)
+    target = User.objects.values().get(id=target_user)
+
+    return render(request, 'view_profile.html', {'user' : user, 'target' : target})
