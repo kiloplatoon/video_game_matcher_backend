@@ -44,12 +44,15 @@ def edit_profile(request, user_id):
 
 
 
+from friendships import views
+from friendships.models import Relationship
+
 # Create your views here.
 @api_view(['GET'])
 def current_user(request):
     """
     Determine the current user by their token, and return their data
     """
-    
+
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
