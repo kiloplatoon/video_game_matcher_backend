@@ -57,22 +57,32 @@ def relationship_detail(request):
     return JsonResponse(data=serialized_relationships, status=200)
 
 @csrf_exempt
-def friend_request(request):
+def friend_request(request, user_id, action_user):
+
+
+    # the parameters are right now, just gotta throw it into the form/serializer
 
     temp = request.POST.dict()
 
+    print("user id = ", user_id)
+    print("action id = ", action_user)
+
     if request.method == 'POST':
         form = RelationshipForm(request.POST)
+        print("************************************************************")
+        print("FORM = ", form)
         if form.is_valid():
-            print("WTF")
             relationship = form.save(commit=True)
             serialized_relationship = RelationshipSerializer(relationship).relationship_detail            
+            print("NEW ADD")
             return JsonResponse(data={'Success': 'You have created a new relationship!', 'relationship': serialized_relationship}, status=200)
-        elif (Relationship.objects.values().filter(user_one=temp['user_one'], user_two=temp['user_two']).exists()):
-            Relationship.objects.filter(user_one=temp['user_one'], user_two=temp['user_two']).update(status=0, action_user=temp['action_user'])
+        elif (Relationship.objects.values().filter(user_one=user_id, user_two=action_user).exists()):
+            Relationship.objects.filter(user_one=user_one, user_two=user_two).update(status=0, action_user=temp['action_user'])
+            print("READDED")
             return JsonResponse(data={'Success': 'Readded user'}, status=200)
 
         else:
+            print("ERROR ADD")
             return JsonResponse(data={'Error': 'Form not valid!'}, status=200)
             
 @csrf_exempt
@@ -120,10 +130,10 @@ def check_friendship(request, action_user, user_id):
 
 @csrf_exempt
 def friends_list(action_user):
-    print("WTFFF")
+    # print("WTFFF")
     temp = Relationship.objects.filter(Q(user_one=action_user, status=1) | Q(user_two=action_user, status=1) ).values()
-    print(len(temp))
-    print(temp)
+    # print(len(temp))
+    # print(temp)
     list = []
     user1 = User.objects.get(id=action_user)
     for i in temp:
@@ -175,8 +185,8 @@ def go_to_friends_list(request, user_id):
         if user1.username != User.objects.get(id = i['user_one_id']).username:
             list.append(User.objects.values().get(id = i['user_one_id']))
 
-    print('list = ', list)
-    print("id = ", user_id)
+    # print('list = ', list)
+    # print("id = ", user_id)
     return JsonResponse(data={f'list': list})
     # return render(request, 'friends_list.html', {'user' : user, 'list' : list})
 
@@ -201,7 +211,7 @@ def search_results(request, user_id):
 def received_friend_requests(request, user_id):
     user = User.objects.values().get(id=user_id)
     temp = Relationship.objects.filter(user_two=user_id, status=0).values()
-    print(temp)
+    # print(temp)
     list = []
 
     for i in temp:
