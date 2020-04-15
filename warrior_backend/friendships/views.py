@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from rest_framework.response import Response
 
 from .forms import RelationshipForm, UserForm
 from .models import Relationship
@@ -137,7 +138,7 @@ def friends_list(action_user):
     # return JsonResponse(data={f'Success!': f'{user1.username} friend list: {list}'})
 
 @csrf_exempt
-def pending_requests(action_user):
+def pending_requests(request, action_user):
     temp = Relationship.objects.filter(user_two=action_user, status=0).values()
 
     list = []
@@ -145,7 +146,7 @@ def pending_requests(action_user):
         list.append(User.objects.get(id = i['user_one_id']).username)
 
     user1 = User.objects.get(id=action_user)
-    return list
+    return JsonResponse(data={f'list': list})
     # return JsonResponse(data={f'Success!': f'{user1.username} pending friend request list: {list}'})
 
 @csrf_exempt
@@ -158,7 +159,7 @@ def friend_requests_sent_by_user(request, action_user):
         list.append(User.objects.get(id = i['user_two_id']).username)
 
     user1 = User.objects.get(id=action_user)
-    return JsonResponse(data={f'Success!': f'{user1.username} pending sent friend request list: {list}'})
+    return JsonResponse(data={f'list': list})
 
 @csrf_exempt
 def go_to_friends_list(request, user_id):
@@ -174,7 +175,10 @@ def go_to_friends_list(request, user_id):
         if user1.username != User.objects.get(id = i['user_one_id']).username:
             list.append(User.objects.values().get(id = i['user_one_id']))
 
-    return render(request, 'friends_list.html', {'user' : user, 'list' : list})
+    print('list = ', list)
+    print("id = ", user_id)
+    return JsonResponse(data={f'list': list})
+    # return render(request, 'friends_list.html', {'user' : user, 'list' : list})
 
 
 @csrf_exempt
@@ -188,7 +192,9 @@ def search_results(request, user_id):
     else:
         result = User.objects.values().get(username=search_user)
 
-    return render(request, 'search_results.html', {'search_user' : search_user, 'result' : result, 'user' : user})
+    return JsonResponse(data={f'result': result})
+
+    # return render(request, 'search_results.html', {'search_user' : search_user, 'result' : result, 'user' : user})
 
 
 @csrf_exempt
@@ -201,7 +207,7 @@ def received_friend_requests(request, user_id):
     for i in temp:
         list.append(User.objects.values().get(id = i['user_one_id']))
 
-    return render(request, 'received_friend_requests.html', {'user' : user, 'list' : list})
+    return JsonResponse(data={f'list': list})
 
 @csrf_exempt
 def sent_friend_requests(request, user_id):
@@ -213,7 +219,7 @@ def sent_friend_requests(request, user_id):
     for i in temp:
         list.append(User.objects.values().get(id = i['user_two_id']))
 
-    return render(request, 'sent_friend_requests.html', {'user' : user, 'list' : list})
+    return JsonResponse(data={f'list': list})
 
 def view_profile(request, user_id, target_user):
     user = User.objects.values().get(id=user_id)
