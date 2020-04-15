@@ -26,7 +26,7 @@ urlpatterns = [
     path('<int:user_id>/delete_friend/<int:action_user>', views.deny_friend_request, name='deny_friend_request'),
 
     path('relationship', views.relationship_detail, name='relationship_detail'),
-    path('relationship/friend_request', views.friend_request, name='friend_request'),
+    path('relationship/<int:user_id>/friend_request/<int:action_user>', views.friend_request, name='friend_request'),
 
     #                  action user = who is accepting           user_id = who is being accepted by action user
     path('relationship/<int:action_user>/accept_friend_request/<int:user_id>', views.accept_friend_request, name='accept_friend_request'),
