@@ -3,7 +3,7 @@ from . import models, serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import UserSerializer, ProfileSerializer
-from .models import User, Profile
+from accounts.models import User, Profile
 from django.http import JsonResponse
 import json
 from .forms import ProfileForm
@@ -30,9 +30,8 @@ def profile_detail(request, user_id):
     return JsonResponse(data=serialized_profile.data, status=200, safe = False)
 
 @api_view(('POST',))
-def edit_profile(request, user_id):
-    user1 = User.objects.get(id=user_id)
-    profile = Profile.objects.get(user = user1)
+def edit_profile(request, profile_id):
+    profile = Profile.objects.get(id = profile_id)
     data = json.loads(request.body)
     if request.method == "POST":
         form = ProfileForm(data, instance=profile)
