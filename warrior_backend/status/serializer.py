@@ -8,4 +8,5 @@ class StatusSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'status',
+            'created_at'
         )

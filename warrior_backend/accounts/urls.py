@@ -9,7 +9,7 @@ urlpatterns = [
     # profile/
     path('<int:user_id>/link/', views.link),
     path('list/', views.profile_list),
-    path('<int:user_id>/edit/', views.edit_profile, name='profile'),
+    path('<int:profile_id>/edit/', views.edit_profile, name='profile'),
     path('<int:user_id>/details/', views.profile_detail),
     
     # auth/

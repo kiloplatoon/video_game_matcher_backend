@@ -8,8 +8,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 
-def list_status(request):
-    statuses = Status.objects.all()
+def list_status(request,user_id):
+    user = User.objects.get(id=user_id)
+    statuses = Status.objects.all().filter(user=user).order_by('-id')
     serializer = StatusSerializer(statuses, many=True)
     return JsonResponse(serializer.data, safe = False)
 
